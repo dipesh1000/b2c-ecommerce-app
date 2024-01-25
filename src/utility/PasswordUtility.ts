@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 
+
 export const GenerateSalt = async () => {
     return await bcrypt.genSalt();
 }
@@ -7,3 +8,11 @@ export const GenerateSalt = async () => {
 export const GeneratePassword = async (password: string, salt: string) => {
     return await bcrypt.hash(password, salt);
 }
+
+// export const validatePassword = async (enteredPassword: string, savedPassword: string, salt: string) => {
+//     return await GeneratePassword(enteredPassword, salt) === savedPassword;
+//    }
+   
+//    export const GenerateSignature = async (payload: AuthPayload) => {
+//        return jwt.sign(payload, APP_SECRET, {expiresIn: '1d'});
+//    }

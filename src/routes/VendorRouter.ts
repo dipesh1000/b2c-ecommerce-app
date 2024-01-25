@@ -1,8 +1,9 @@
 import express from 'express'
-import { RegisterVendor } from '../controllers';
+import { LoginVendor, RegisterVendor } from '../controllers';
 
 const router = express.Router();
 
-router.post('/', RegisterVendor)
+router.post('/register', RegisterVendor);
+router.post('/login', LoginVendor);
 
 export {router as VendorRouter};
