@@ -6,8 +6,6 @@ import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import { SECRET_JWT_KEY } from '../config';
 
-
-
 export const RegisterVendor = async (req: Request, res: Response, Next: NextFunction) => {
     const {name, email, password} = <CreateVendorInput>req.body;
     const userExist = await Vendor.findOne({email: email}).exec();

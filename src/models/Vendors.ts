@@ -6,6 +6,7 @@ interface IUser {
     name: string;
     email: string;
     avatar?: string;
+    products?: string[];
     password: string;
     phone?: string;
 }
@@ -14,7 +15,8 @@ interface IUser {
 const userSchema = new Schema<IUser>({
     name: { type: String, required: true },
     email: { type: String, required: true },
-    avatar: String,
+    avatar: { type: String },
+    products: { type: String },
     password: {type: String, required: true},
     phone: {type: String}
   });

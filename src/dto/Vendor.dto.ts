@@ -1,7 +1,8 @@
 export interface CreateVendorInput{
     name: string;
     email: string;
-    password: string
+    password: string;
+    products?: string[];
 }
 
 export interface LoginVendorInput{
