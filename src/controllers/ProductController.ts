@@ -1,12 +1,36 @@
 import { NextFunction, Request, Response } from "express";
-import { CreateProductInputs } from "../dto";
+import { CreateProductColorInterface, CreateProductInputs } from "../dto";
 import { Product } from "../models/Products";
-import { Images } from "../models/Images";
+import { Product_Colors, Vendor } from "../models";
+ 
+export const AddProductColors = async (req: Request, res: Response, next: NextFunction) => {
+    const {name, color_code, image} = <CreateProductColorInterface>req.body;
+    const color = new Product_Colors;
+    color.name = name;
+    color.color_code = color_code;
+
+    /** ----- Updating Image -------- */
+    const files = req.files as [Express.Multer.File];
+    const images = files.map((file: Express.Multer.File) => file.filename)
+    color.image?.push(...images);
+
+    const results = await color.save();
+    res.status(201).json({
+        message: 'Added Success',
+        data: results
+    })   
+}
 
 export const Addproduct = async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.file, "from the req");
+    console.log(req.user, "from req");
+    const vendorExist = await Vendor.findById(req.user._id);
+    if (vendorExist === null) {
+        return res.status(401).json({error: true, message: 'User Not Found!'})
+    }
+    
     const reqData = <CreateProductInputs>req.body;
     const data = new Product();
+    data.vendor = req.user._id;
     data.name = reqData.name;
     data.content = reqData.content;
     data.price = reqData.price;
@@ -18,6 +42,7 @@ export const Addproduct = async (req: Request, res: Response, next: NextFunction
     data.size = reqData.size;
     data.sku_code = reqData.sku_code;
     data.category = reqData.category;
+    data.color = reqData.color;
     const files = req.files as [Express.Multer.File];
     const images = files?.map((file: Express.Multer.File) => file.filename)
     data.image?.push(...images);
@@ -33,12 +58,13 @@ export const Addproduct = async (req: Request, res: Response, next: NextFunction
             message: "Something Went Wrong"
         })
     }
-   
 }
 
-export const GetAllProducts = (req: Request, res: Response, next: NextFunction) => {
+export const GetAllProducts = async (req: Request, res: Response, next: NextFunction) => {
+    const data = await Product.find();
     res.status(201).json({
-        message: 'Get All Product Success'
+        message: 'Get All Product Success',
+        data
     })    
 }
 

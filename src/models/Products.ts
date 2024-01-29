@@ -1,20 +1,14 @@
-import { Schema, connect, model } from "mongoose";
+import { Schema, model } from "mongoose";
 
 
 // 1. Create an interface representing a document in MongoDB.
-interface IColor {
-    name: string;
-    color_code: string;
-    image_by_color: string[];
-  }
-
 interface IProduct {
     name: string;
     content: string;
     price: number;
     discount: number;
     discount_percentage: string,
-    // vendorId: any,
+    vendor: any,
     image?: string[];
     product_type: string;
     quantity: number;
@@ -22,7 +16,7 @@ interface IProduct {
     sold_quantity: number;
     size?: string[];
     sku_code: string;
-    color: IColor[];
+    color?: string[];
 }
 
 // 2. Create a Schema corresponding to the document interface.
@@ -32,18 +26,12 @@ const productSchema = new Schema<IProduct>({
     price: { type: Number, required: true },
     discount: { type: Number},
     discount_percentage: { type: String },
-    // vendorId: { type: Schema.Types.ObjectId, ref: 'Vendor', required: true },
+    vendor: { type: Schema.Types.ObjectId, ref: 'Vendor', required: true },
     image: {type: [String]},
     category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
     product_type: { type: String },
     quantity: {type: Number, default: 1 },
-    color: [
-        {
-            name: { type: String },
-            color_code: {type: String},
-            image_by_color: [String]
-        }
-    ],
+    color: [{type: Schema.Types.ObjectId, ref: 'Product_Colors'}],
     sold_quantity: {type: Number, default: 0 },
     size: [
         {

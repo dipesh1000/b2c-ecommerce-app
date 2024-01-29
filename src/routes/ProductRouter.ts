@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from 'multer';
-import { Addproduct, GetAllProducts, UpdateProduct } from '../controllers';
+import { AddProductColors, Addproduct, GetAllProducts, UpdateProduct } from '../controllers';
+import { UseAuthenticate } from '../middlewares';
 
 const imageStorage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -15,11 +16,13 @@ const imageService = multer({storage: imageStorage}).array('image', 10)
 
 const router = express.Router();
 
-/** ----------Add Product -------------- */
-router.post('/', imageService, Addproduct);
+/** ----------Get Product -------------- */
+router.get('/', GetAllProducts)
 
 /** ----------Add Product -------------- */
-router.get('/', GetAllProducts)
+router.use(UseAuthenticate)
+router.post('/product-colors', imageService, AddProductColors)
+router.post('/', imageService, Addproduct);
 
 /** ----------Add Product -------------- */
 router.put('/:productId', UpdateProduct)

@@ -1,4 +1,6 @@
 import bcrypt from 'bcrypt';
+import { SECRET_JWT_KEY } from '../config';
+import { AuthPayload } from '../dto/Auth.dto';
 
 
 export const GenerateSalt = async () => {
@@ -16,3 +18,13 @@ export const GeneratePassword = async (password: string, salt: string) => {
 //    export const GenerateSignature = async (payload: AuthPayload) => {
 //        return jwt.sign(payload, APP_SECRET, {expiresIn: '1d'});
 //    }
+
+// export const ValidateSingnature = async (req: Request) => {
+//     const signature = req.get('Authorization');
+//     if(signature) {
+//         const payload = await jwt.verify(signature.split(' ')[1], SECRET_JWT_KEY) as AuthPayload;
+//         req.user = payload;
+//         return true;
+//     }
+//     return false;
+// }   

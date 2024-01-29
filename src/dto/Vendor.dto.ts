@@ -9,3 +9,9 @@ export interface LoginVendorInput{
     email: string;
     password: string
 }
+
+export interface VendorInput {
+    _id: string;
+    email: string;
+    password: string;
+}

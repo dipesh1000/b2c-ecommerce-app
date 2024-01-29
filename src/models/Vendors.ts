@@ -16,7 +16,7 @@ const userSchema = new Schema<IUser>({
     name: { type: String, required: true },
     email: { type: String, required: true },
     avatar: { type: String },
-    products: { type: String },
+    products: [String],
     password: {type: String, required: true},
     phone: {type: String}
   });

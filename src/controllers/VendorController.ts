@@ -36,6 +36,6 @@ export const LoginVendor = async (req: Request, res:Response, next:NextFunction)
     if(!verify) {
         return res.status(401).json({error: true, message: 'Password not match'})
     }
-    let token = await jwt.sign({ data: availableVendor.email }, SECRET_JWT_KEY, { expiresIn: '1h' });
+    let token = await jwt.sign({ data: availableVendor.email, _id: availableVendor._id }, SECRET_JWT_KEY, { expiresIn: '1h' });
     return res.status(201).json({error: false, message: "Login Success", token})
 }

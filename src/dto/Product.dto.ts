@@ -4,7 +4,7 @@ export interface CreateProductInputs{
     price: number;
     discount: number;
     discount_percentage: string,
-    // vendorId: any,
+    vendorId: string,
     image?: string[];
     product_type: string;
     quantity: number;
@@ -12,4 +12,11 @@ export interface CreateProductInputs{
     size?: [];
     sku_code: string;
     category: any;
+    color?:string[]; 
+}
+
+export interface CreateProductColorInterface {
+    name: string,
+    color_code: string,
+    image?: string[],
 }

@@ -6,7 +6,7 @@ import { MONGO_URI } from './src/config';
 const app = express();
 const port = 3000;
 app.use(express.json());
-app.use('/category', CategoryRouter)
+app.use('/category', CategoryRouter);
 app.use('/product', ProductRouter);
 app.use('/admin', AdminRouter);
 app.use('/vendor', VendorRouter);
