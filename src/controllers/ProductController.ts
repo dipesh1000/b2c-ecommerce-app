@@ -43,9 +43,17 @@ export const Addproduct = async (req: Request, res: Response, next: NextFunction
     data.sku_code = reqData.sku_code;
     data.category = reqData.category;
     data.color = reqData.color;
+
+    data.is_trending= reqData.is_trending;
+    data.flash_sale= reqData.flash_sale;
+    data.in_stock= reqData.in_stock;
+    data.view_count= reqData.view_count;
+    data.custom_outfit= reqData.custom_outfit;
+
     const files = req.files as [Express.Multer.File];
     const images = files?.map((file: Express.Multer.File) => file.filename)
     data.image?.push(...images);
+
     const results = await data.save();
     if (results) {
         res.status(201).json({
@@ -61,11 +69,33 @@ export const Addproduct = async (req: Request, res: Response, next: NextFunction
 }
 
 export const GetAllProducts = async (req: Request, res: Response, next: NextFunction) => {
-    const data = await Product.find();
+    const data = await Product.find().populate(['color', 'category']);
     res.status(201).json({
         message: 'Get All Product Success',
         data
     })    
+}
+
+// Get Product By Id
+export const GetProductByType = async (req: Request, res: Response, next: NextFunction) => {
+    const typeQuery = req.query.type;
+    let data;
+    if(typeQuery === 'is_trending') {
+        data = await Product.find().where({ is_trending: true })
+    }
+    res.status(201).json({
+        message: 'Trending Product Fetch Successful',
+        data
+    })
+}
+
+// Get Product By Id
+export const GetProductByFlashSale = async (req: Request, res: Response, next: NextFunction) => {
+    const data = await Product.where({flash_sale: true})
+    res.status(200).json({
+        message: 'Data Fetch Successfully',
+        data
+    })
 }
 
 export const UpdateProduct = (req: Request, res: Response, next: NextFunction) => {

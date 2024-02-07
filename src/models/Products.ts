@@ -17,6 +17,11 @@ interface IProduct {
     size?: string[];
     sku_code: string;
     color?: string[];
+    is_trending: boolean;
+    flash_sale: boolean;
+    in_stock: boolean;
+    view_count: number;
+    custom_outfit: boolean;
 }
 
 // 2. Create a Schema corresponding to the document interface.
@@ -33,13 +38,24 @@ const productSchema = new Schema<IProduct>({
     quantity: {type: Number, default: 1 },
     color: [{type: Schema.Types.ObjectId, ref: 'Product_Colors'}],
     sold_quantity: {type: Number, default: 0 },
+    is_trending: {type: Boolean, default: false},
+    flash_sale: {type: Boolean, default: false},
+    in_stock: {type: Boolean, default: true},
+    view_count: {type: Number, default: 0},
+    custom_outfit: {type: Boolean, default: false},
     size: [
         {
             name: {type: String}
         }
     ],
     sku_code: {type: String}
-  }, { timestamps: true });
+  }, { toJSON: {
+        transform(doc, ret) {
+            delete ret.__v
+            delete ret.createdAt;
+            delete ret.updatedAt;
+        }
+    },timestamps: true });
 
 
 // 3. Create a Model.

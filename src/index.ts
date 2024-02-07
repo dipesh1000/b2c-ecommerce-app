@@ -1,10 +1,10 @@
 import express from 'express';
-import { AdminRouter, CategoryRouter, ProductRouter, VendorRouter } from './src/routes';
+import { AdminRouter, CategoryRouter, ProductRouter, VendorRouter } from './routes';
 import mongoose from 'mongoose';
-import { MONGO_URI } from './src/config';
+import { MONGO_URI } from './config';
 
 const app = express();
-const port = 3000;
+const port = 8000;
 app.use(express.json());
 app.use('/category', CategoryRouter);
 app.use('/product', ProductRouter);

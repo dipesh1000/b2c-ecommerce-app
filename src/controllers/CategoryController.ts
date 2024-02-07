@@ -4,6 +4,7 @@ import { Category } from "../models/Category";
 interface ICategory {
     name: string,
     parent?: string;
+    
 }
 
 export const AddCategory = async (req: Request, res:Response, next: NextFunction) => {
@@ -18,6 +19,12 @@ export const AddCategory = async (req: Request, res:Response, next: NextFunction
     const cat = new Category;
     cat.name = reqData.name;
     cat.parent = reqData.parent;
+
+     /** ----- Updating Image -------- */
+     const files = req.files as [Express.Multer.File];
+     const images = files.map((file: Express.Multer.File) => file.filename)
+     cat.image?.push(...images);
+
     const result = await cat.save();
     res.status(201).json({
         message: "Category Created Successful",

@@ -13,6 +13,11 @@ export interface CreateProductInputs{
     sku_code: string;
     category: any;
     color?:string[]; 
+    is_trending: boolean;
+    flash_sale: boolean;
+    in_stock: boolean;
+    view_count: number;
+    custom_outfit: boolean;
 }
 
 export interface CreateProductColorInterface {
