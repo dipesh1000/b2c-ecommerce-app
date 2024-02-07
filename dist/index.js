@@ -7,6 +7,8 @@ const express_1 = __importDefault(require("express"));
 const routes_1 = require("./routes");
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = require("./config");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = 8000;
 app.use(express_1.default.json());

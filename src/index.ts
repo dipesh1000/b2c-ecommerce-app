@@ -2,7 +2,9 @@ import express from 'express';
 import { AdminRouter, CategoryRouter, ProductRouter, VendorRouter } from './routes';
 import mongoose from 'mongoose';
 import { MONGO_URI } from './config';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const app = express();
 const port = 8000;
 app.use(express.json());
