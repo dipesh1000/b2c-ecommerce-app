@@ -14,11 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UseAuthenticate = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const config_1 = require("../config");
 const ValidateSingnature = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const signature = req.get('Authorization');
+    let secretKey = process.env.SECRET_KEY;
     if (signature) {
-        const payload = yield jsonwebtoken_1.default.verify(signature.split(' ')[1], config_1.SECRET_JWT_KEY);
+        const payload = yield jsonwebtoken_1.default.verify(signature.split(' ')[1], secretKey);
         req.user = payload;
         return true;
     }
