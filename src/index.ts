@@ -9,7 +9,7 @@ const port = process.env.PORT;
 const user = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 
-console.log(user, password, port, "From the line 12");
+
 app.use(express.json());
 app.use('/category', CategoryRouter);
 app.use('/product', ProductRouter);
