@@ -2,11 +2,10 @@ import express from 'express';
 import { AdminRouter, CategoryRouter, ProductRouter, VendorRouter } from './routes';
 import mongoose from 'mongoose';
 import { MONGO_URI } from './config';
-import dotenv from 'dotenv';
+import 'dotenv/config'
 
-dotenv.config();
 const app = express();
-const port = 8000;
+const port = process.env.PORT;
 app.use(express.json());
 app.use('/category', CategoryRouter);
 app.use('/product', ProductRouter);
