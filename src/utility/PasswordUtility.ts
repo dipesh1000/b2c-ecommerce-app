@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
-import { SECRET_JWT_KEY } from '../config';
-import { AuthPayload } from '../dto/Auth.dto';
+
 
 
 export const GenerateSalt = async () => {

@@ -4,7 +4,6 @@ import { Vendor } from '../models';
 import { GeneratePassword, GenerateSalt } from '../utility';
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
-import { SECRET_JWT_KEY } from '../config';
 
 export const RegisterVendor = async (req: Request, res: Response, Next: NextFunction) => {
     const {name, email, password} = <CreateVendorInput>req.body;
@@ -28,6 +27,7 @@ export const RegisterVendor = async (req: Request, res: Response, Next: NextFunc
 
 export const LoginVendor = async (req: Request, res:Response, next:NextFunction) => {
     const {email, password} = <LoginVendorInput>req.body;
+    let secretKey = process.env.SECRET_KEY;
     const availableVendor = await Vendor.findOne({email});
     if(availableVendor === null) {
         return res.status(401).json({error: true, message: 'User Not Found!!'})
@@ -36,6 +36,6 @@ export const LoginVendor = async (req: Request, res:Response, next:NextFunction)
     if(!verify) {
         return res.status(401).json({error: true, message: 'Password not match'})
     }
-    let token = await jwt.sign({ data: availableVendor.email, _id: availableVendor._id }, SECRET_JWT_KEY, { expiresIn: '1h' });
+    let token = await jwt.sign({ data: availableVendor.email, _id: availableVendor._id }, secretKey, { expiresIn: '1h' });
     return res.status(201).json({error: false, message: "Login Success", token})
 }
