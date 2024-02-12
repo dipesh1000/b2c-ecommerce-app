@@ -1,10 +1,18 @@
 import express from 'express';
 import { AdminRouter, CategoryRouter, ProductRouter, VendorRouter } from './routes';
 import mongoose from 'mongoose';
-import { MONGO_URI } from './config';
+import cors from 'cors';
 import 'dotenv/config'
 
 const app = express();
+
+// Define the CORS options
+const corsOptions = {
+  credentials: true,
+  origin: ['http://localhost:3000', 'https://shoppingkart-3lox.onrender.com/'] // Whitelist the domains you want to allow
+};
+
+app.use(cors(corsOptions))
 const port = process.env.PORT;
 const user = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
