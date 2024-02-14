@@ -21,6 +21,8 @@ const router = express_1.default.Router();
 exports.ProductRouter = router;
 /** ----------Get Product -------------- */
 router.get('/', controllers_1.GetAllProducts);
+/** ----------Get Product by Category -------------- */
+router.get('/category/:categoryId', controllers_1.GetProductsByCategory);
 /** ----------Get Product by Flash Sale -------------- */
 router.get('/flash_sale', controllers_1.GetProductByFlashSale);
 /** ----------Get Product by type -------------- */

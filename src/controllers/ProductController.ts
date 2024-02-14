@@ -68,13 +68,46 @@ export const Addproduct = async (req: Request, res: Response, next: NextFunction
     }
 }
 
-export const GetAllProducts = async (req: Request, res: Response, next: NextFunction) => {
-    const data = await Product.find().populate(['color', 'category']);
-    res.status(201).json({
-        message: 'Get All Product Success',
-        data
-    })    
+export const GetProductsByCategory = async (req: Request, res: Response, next: NextFunction) => {
+    const { categoryId } = req.params;
+    const page: number = Number.parseInt(req.query.page as string) || 1;
+    const pageSize: number = Number.parseInt(req.query.pageSize as string) || 10;
+    try {
+        const count: number = await Product.countDocuments({category: categoryId});
+        const totalPages: number = Math.ceil(count / pageSize);
+        const data = await Product.find().where({category: categoryId}).populate(['color', 'category']).skip((page - 1) * pageSize).limit(pageSize);
+        res.status(201).json({
+            message: 'Get All Product Success',
+            data,
+            count,
+            totalPages,
+            currentPage: page
+        })
+    } catch (error) {
+        throw error;
+    }
 }
+
+export const GetAllProducts = async (req: Request, res: Response, next: NextFunction) => {
+    const page: number = Number.parseInt(req.query.page as string) || 1;
+    const pageSize: number = Number.parseInt(req.query.pageSize as string) || 10;
+
+    try {
+        const count: number = await Product.countDocuments();
+        const totalPages: number = Math.ceil(count / pageSize);
+        const data = await Product.find().skip((page - 1) * pageSize).limit(pageSize).populate('category').exec();
+        res.status(201).json({
+            message: 'Get All Product Success',
+            data,
+            count,
+            totalPages,
+            currentPage: page
+        })
+    } catch (error) {
+        throw error;
+    }
+}
+
 
 // Get Product By Id
 export const GetProductByType = async (req: Request, res: Response, next: NextFunction) => {

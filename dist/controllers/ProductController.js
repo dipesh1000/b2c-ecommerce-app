@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateProduct = exports.GetProductByFlashSale = exports.GetProductByType = exports.GetAllProducts = exports.Addproduct = exports.AddProductColors = void 0;
+exports.UpdateProduct = exports.GetProductByFlashSale = exports.GetProductByType = exports.GetAllProducts = exports.GetProductsByCategory = exports.Addproduct = exports.AddProductColors = void 0;
 const Products_1 = require("../models/Products");
 const models_1 = require("../models");
 const AddProductColors = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -74,12 +74,45 @@ const Addproduct = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.Addproduct = Addproduct;
+const GetProductsByCategory = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { categoryId } = req.params;
+    const page = Number.parseInt(req.query.page) || 1;
+    const pageSize = Number.parseInt(req.query.pageSize) || 10;
+    try {
+        const count = yield Products_1.Product.countDocuments({ category: categoryId });
+        const totalPages = Math.ceil(count / pageSize);
+        const data = yield Products_1.Product.find().where({ category: categoryId }).populate(['color', 'category']).skip((page - 1) * pageSize).limit(pageSize);
+        res.status(201).json({
+            message: 'Get All Product Success',
+            data,
+            count,
+            totalPages,
+            currentPage: page
+        });
+    }
+    catch (error) {
+        throw error;
+    }
+});
+exports.GetProductsByCategory = GetProductsByCategory;
 const GetAllProducts = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield Products_1.Product.find().populate(['color', 'category']);
-    res.status(201).json({
-        message: 'Get All Product Success',
-        data
-    });
+    const page = Number.parseInt(req.query.page) || 1;
+    const pageSize = Number.parseInt(req.query.pageSize) || 10;
+    try {
+        const count = yield Products_1.Product.countDocuments();
+        const totalPages = Math.ceil(count / pageSize);
+        const data = yield Products_1.Product.find().skip((page - 1) * pageSize).limit(pageSize).populate('category').exec();
+        res.status(201).json({
+            message: 'Get All Product Success',
+            data,
+            count,
+            totalPages,
+            currentPage: page
+        });
+    }
+    catch (error) {
+        throw error;
+    }
 });
 exports.GetAllProducts = GetAllProducts;
 // Get Product By Id
