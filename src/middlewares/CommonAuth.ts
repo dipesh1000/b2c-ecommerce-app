@@ -15,16 +15,24 @@ declare global {
 const ValidateSingnature = async (req: Request) => {
     const signature = req.get('Authorization');
     let secretKey = process.env.SECRET_KEY;
-    if(signature) {
-        const payload = await jwt.verify(signature.split(' ')[1], secretKey) as AuthPayload;
-        req.user = payload;
-        return true;
+    try {
+        if(signature) {
+            const payload = await jwt.verify(signature.split(' ')[1], secretKey) as AuthPayload;
+            req.user = payload;
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.log(error);
+        return false;
     }
-    return false;
+    
 }   
 
 export const UseAuthenticate = async (req: Request, res: Response, next: NextFunction) => {
+    
     const signature = await ValidateSingnature(req);
+
     if(signature){
         return next()
     }else{

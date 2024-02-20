@@ -33,9 +33,18 @@ export const AddCategory = async (req: Request, res:Response, next: NextFunction
 }
 
 export const GetAllCategory = async (Req: Request, res: Response, next: NextFunction) => {
-    const result = await Category.find();
-    res.status(201).json({
-        message: "All Category",
-        data: result
-    })
+    console.log("adknadnsdn");
+    try {
+        const result = await Category.find();
+        res.status(201).json({
+            message: "All Category",
+            data: result
+        })
+    } catch (error) {
+        res.status(201).json({
+            error: true,
+            message: error
+        })
+    }
+   
 }

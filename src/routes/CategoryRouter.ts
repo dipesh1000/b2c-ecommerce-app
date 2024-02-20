@@ -4,8 +4,9 @@ import { imageService } from './ProductRouter';
 
 const router = express.Router();
 
+router.get('/', GetAllCategory);
+
 router.post('/', imageService, AddCategory);
 
-router.get('/', GetAllCategory);
 
 export {router as CategoryRouter}
