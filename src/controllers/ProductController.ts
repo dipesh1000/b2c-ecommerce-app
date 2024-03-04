@@ -141,12 +141,13 @@ export const GetProductsByCategory = async (req: Request, res: Response, next: N
     // const catIds: mongoose.Types.ObjectId[] = categoryIdArray.map(id => new mongoose.Types.ObjectId(id));
     const page: number = Number.parseInt(req.query.page as string) || 1;
     const pageSize: number = Number.parseInt(req.query.pageSize as string) || 10;
-    console.log(catIds, "from the cat ids");
+
     try {
-        const count: number = await Product.countDocuments({category: { $in: catIds }});
-        console.log(count, "count");
-        const totalPages: number = Math.ceil(count / pageSize);
+        // const count: number = await Product.countDocuments({category: { $in: catIds }});
+        // const totalPages: number = Math.ceil(count / pageSize);
         const data = await Product.find({category: { $in: catIds }}).populate(['color', 'category']).skip((page - 1) * pageSize).limit(pageSize);
+        const count: number = data.length;
+        const totalPages: number = Math.ceil(count / pageSize);
         res.status(201).json({
             message: 'Get All Product Success',
             data,
@@ -174,11 +175,23 @@ export const GetAllProductColors = async (req: Request, res: Response, next: Nex
 export const GetAllProducts = async (req: Request, res: Response, next: NextFunction) => {
     const page: number = Number.parseInt(req.query.page as string) || 1;
     const pageSize: number = Number.parseInt(req.query.pageSize as string) || 10;
+    const categoryIds = req.query.category as string;
+    const catIds = categoryIds && categoryIds.split(',');
+
+    // check Category Exist or not
+    let query = {}
+    if (catIds && catIds.length > 0) {
+        query = { category: { $in: catIds } };
+      }
+
+    console.log(query);
 
     try {
-        const count: number = await Product.countDocuments();
+        // const count: number = await Product.countDocuments();
+        // const totalPages: number = Math.ceil(count / pageSize);
+        const data = await Product.find(query).skip((page - 1) * pageSize).limit(pageSize).populate('category').exec();
+        const count: number = data.length;
         const totalPages: number = Math.ceil(count / pageSize);
-        const data = await Product.find().skip((page - 1) * pageSize).limit(pageSize).populate('category').exec();
         res.status(201).json({
             message: 'Get All Product Success',
             data,
@@ -262,6 +275,15 @@ export const DeleteProductById = async (req: Request, res: Response, next: NextF
         res.status(500).json({ error: 'An error occurred while updating the product' });
     }
    
+}
+
+export const GetProductById = async (req: Request, res: Response, next: NextFunction) => {
+    const productId = req.params.productId;
+    const data = await Product.findById(productId).populate(['color', 'category']).exec();
+    res.status(201).json({
+        data: data,
+        message: 'Get Product Details'
+    })
 }
 
 export const UpdateProduct = (req: Request, res: Response, next: NextFunction) => {

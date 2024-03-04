@@ -32,10 +32,42 @@ export const AddCategory = async (req: Request, res:Response, next: NextFunction
     })
 }
 
-export const GetAllCategory = async (Req: Request, res: Response, next: NextFunction) => {
-    console.log("adknadnsdn");
+export const GetParentChildCategory = async (req: Request, res: Response, next: NextFunction) => {
+    const {catId} = req.params;
+    
+    try {
+        const result = await Category.find({parent: catId});
+        res.status(201).json({
+            message: "All Category",
+            data: result
+        })
+    } catch (error) {
+        res.status(201).json({
+            error: true,
+            message: error
+        })
+    }
+}
+
+export const GetParentCategory = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const result = await Category.find({parent: null});
+        res.status(201).json({
+            message: "All Category",
+            data: result
+        })
+    } catch (error) {
+        res.status(201).json({
+            error: true,
+            message: error
+        })
+    }
+}
+
+export const GetAllCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const result = await Category.find();
+       
         res.status(201).json({
             message: "All Category",
             data: result
