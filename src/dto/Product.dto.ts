@@ -2,7 +2,7 @@ export interface CreateProductInputs{
     name: string;
     content: string;
     price: number;
-    discount: number;
+    discount_amount: number;
     discount_percentage: string,
     vendorId: string,
     image?: string[];

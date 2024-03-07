@@ -24,10 +24,27 @@ export const AddProductColors = async (req: Request, res: Response, next: NextFu
     })   
 }
 
+export const UpdateProductColors = async (req: Request, res: Response, next: NextFunction) => {
+    const reqData = <CreateProductColorInterface>req.body;
+    const color = await Product_Colors.findById(req.params.id)
+    // const color = new Product_Colors;
+    color.name = reqData.name || color.name;
+    color.color_code = reqData.color_code || color.color_code;
+
+    /** ----- Updating Image -------- */
+    const files = req.files as [Express.Multer.File];
+    const images = files.map((file: Express.Multer.File) => file.filename)
+    color.image?.push(...images);
+
+    const results = await color.save();
+    res.status(201).json({
+        message: 'Product Updated Success',
+        data: results
+    })  
+}
+
 export const Addproduct = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        
-    
     const vendorExist = await Vendor.findById(req.user._id);
     if (vendorExist === null) {
         return res.status(401).json({error: true, message: 'User Not Found!'})
@@ -39,7 +56,7 @@ export const Addproduct = async (req: Request, res: Response, next: NextFunction
     data.name = reqData.name;
     data.content = reqData.content;
     data.price = reqData.price;
-    data.discount = reqData.discount;
+    data.discount_amount = reqData.discount_amount;
     data.discount_percentage = reqData.discount_percentage;
     data.product_type = reqData.product_type;
     data.quantity = reqData.quantity;
@@ -92,7 +109,7 @@ export const UpdateProductById = async (req: Request, res: Response, next: NextF
     data.name = reqData.name;
     data.content = reqData.content;
     data.price = reqData.price;
-    data.discount = reqData.discount;
+    data.discount_amount = reqData.discount_amount;
     data.discount_percentage = reqData.discount_percentage;
     data.product_type = reqData.product_type;
     data.quantity = reqData.quantity;

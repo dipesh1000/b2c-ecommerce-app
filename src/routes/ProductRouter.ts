@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { AddProductColors, Addproduct, DeleteProductById, GetAllProductColors, GetAllProducts, GetProductByFlashSale, GetProductById, GetProductByType, GetProductsByCategory, UpdateProduct, UpdateProductById } from '../controllers';
+import { AddProductColors, Addproduct, DeleteProductById, GetAllProductColors, GetAllProducts, GetProductByFlashSale, GetProductById, GetProductByType, GetProductsByCategory, UpdateProduct, UpdateProductById, UpdateProductColors } from '../controllers';
 import { UseAuthenticate } from '../middlewares';
 
 const imageStorage = multer.diskStorage({
@@ -35,10 +35,11 @@ router.get('/search', GetProductByType)
 /** ----------Get Product by ID -------------- */
 router.get('/:productId', GetProductById)
 
-
+// 
 /** ----------Add Product -------------- */
 router.use(UseAuthenticate)
 router.post('/product-colors', imageService, AddProductColors)
+router.put('/product-colors/:id', imageService, UpdateProductColors)
 router.post('/', imageService, Addproduct);
 router.put('/:productId', imageService, UpdateProductById);
 router.delete('/:productId', DeleteProductById);
