@@ -296,11 +296,43 @@ export const DeleteProductById = async (req: Request, res: Response, next: NextF
 
 export const GetProductById = async (req: Request, res: Response, next: NextFunction) => {
     const productId = req.params.productId;
-    const data = await Product.findById(productId).populate(['color', 'category']).exec();
-    res.status(201).json({
-        data: data,
-        message: 'Get Product Details'
-    })
+    try {
+        await Product.findByIdAndUpdate(productId, {$inc: {view_count: 1}})
+        const data = await Product.findById(productId).populate(['color', 'category']).exec();
+        res.status(201).json({
+            data: data,
+            message: 'Get Product Details'
+        })
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            message: error
+        })
+    }
+    
+}
+
+export const GetProductByMostViewed = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        console.log("most data");
+        const data = await Product.find({view_count: {$gt: 0}}).sort({view_count: -1}).populate(['color', 'category']).limit(5).exec();
+      
+        res.status(201).json({
+            data: data,
+            message: 'Get Product Details'
+        })
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            message: error
+        })
+    }
+    
+}
+
+export const SaveProductForLater = (req: Request, res: Response, next: NextFunction) => {
+    const data = req.body;
+    return res.send(data)
 }
 
 export const UpdateProduct = (req: Request, res: Response, next: NextFunction) => {

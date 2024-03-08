@@ -25,3 +25,11 @@ export interface CreateProductColorInterface {
     color_code: string,
     image?: string[],
 }
+
+export interface ProductWishList {
+    product_id: string,
+    quantity: number,
+    price: number,
+    discounted_price: number,
+    user_id: string,
+}

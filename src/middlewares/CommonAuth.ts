@@ -35,7 +35,7 @@ export const UseAuthenticate = async (req: Request, res: Response, next: NextFun
 
     if(signature){
         return next()
-    }else{
+    } else{
         return res.json({message: "User Not authorised"});
     }
 }

@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import 'dotenv/config'
 import path from 'path';
+import { UserRouter } from './routes/UserRouter';
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use('/api/category', CategoryRouter);
 app.use('/api/product', ProductRouter);
 app.use('/api/admin', AdminRouter);
 app.use('/api/vendor', VendorRouter);
+app.use('/api/user', UserRouter);
 app.use('/images', express.static('./src/images/'));
 
 const dbURI = process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_DB_URI : process.env.LOCAL_DB_URI;
