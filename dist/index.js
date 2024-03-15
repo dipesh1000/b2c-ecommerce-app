@@ -7,8 +7,9 @@ const express_1 = __importDefault(require("express"));
 const routes_1 = require("./routes");
 const mongoose_1 = __importDefault(require("mongoose"));
 const cors_1 = __importDefault(require("cors"));
-require("dotenv/config");
+const dotenv_1 = __importDefault(require("dotenv"));
 const UserRouter_1 = require("./routes/UserRouter");
+dotenv_1.default.config();
 const app = (0, express_1.default)();
 // Define the CORS options
 const corsOptions = {
