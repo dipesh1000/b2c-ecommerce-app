@@ -28,7 +28,7 @@ app.use('/api/vendor', VendorRouter);
 app.use('/api/user', UserRouter);
 app.use('/images', express.static('./src/images/'));
 
-const dbURI = process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_DB_URI : process.env.LOCAL_DB_URI;
+const dbURI = process.env.NODE_ENV === 'production' ? `mongodb+srv://${user}:${password}@cluster0.vukvwps.mongodb.net/?retryWrites=true&w=majority`  : process.env.LOCAL_DB_URI;
 
 mongoose.connect(dbURI)
 .then((response) => console.log("Database Connected Successfull, Compelete what you Start"))
