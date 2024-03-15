@@ -2,7 +2,7 @@ import express from 'express';
 import { AdminRouter, CartRouter, CategoryRouter, ProductRouter, VendorRouter } from './routes';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import dotenv from 'dotenv';
+import * as dotenv from 'dotenv';
 import path from 'path';
 import { UserRouter } from './routes/UserRouter';
 dotenv.config();
