@@ -1,5 +1,5 @@
 import express from 'express';
-import { AdminRouter, CategoryRouter, ProductRouter, VendorRouter } from './routes';
+import { AdminRouter, CartRouter, CategoryRouter, ProductRouter, VendorRouter } from './routes';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import 'dotenv/config'
@@ -20,6 +20,7 @@ const user = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 
 app.use(express.json());
+app.use('/api/cart', CartRouter);
 app.use('/api/category', CategoryRouter);
 app.use('/api/product', ProductRouter);
 app.use('/api/admin', AdminRouter);
