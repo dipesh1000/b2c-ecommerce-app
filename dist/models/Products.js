@@ -7,7 +7,7 @@ const productSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     content: { type: String, required: true },
     price: { type: Number, required: true },
-    discount: { type: Number },
+    discount_amount: { type: Number },
     discount_percentage: { type: String },
     vendor: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Vendor', required: true },
     image: { type: [String] },
@@ -22,9 +22,7 @@ const productSchema = new mongoose_1.Schema({
     view_count: { type: Number, default: 0 },
     custom_outfit: { type: Boolean, default: false },
     size: [
-        {
-            name: { type: String }
-        }
+        { type: String }
     ],
     sku_code: { type: String }
 }, { toJSON: {

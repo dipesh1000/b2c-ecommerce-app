@@ -17,12 +17,18 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const ValidateSingnature = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const signature = req.get('Authorization');
     let secretKey = process.env.SECRET_KEY;
-    if (signature) {
-        const payload = yield jsonwebtoken_1.default.verify(signature.split(' ')[1], secretKey);
-        req.user = payload;
-        return true;
+    try {
+        if (signature) {
+            const payload = yield jsonwebtoken_1.default.verify(signature.split(' ')[1], secretKey);
+            req.user = payload;
+            return true;
+        }
+        return false;
     }
-    return false;
+    catch (error) {
+        console.log(error);
+        return false;
+    }
 });
 const UseAuthenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const signature = yield ValidateSingnature(req);

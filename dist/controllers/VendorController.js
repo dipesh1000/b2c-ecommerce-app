@@ -46,7 +46,15 @@ const LoginVendor = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         return res.status(401).json({ error: true, message: 'Password not match' });
     }
     let token = yield jsonwebtoken_1.default.sign({ data: availableVendor.email, _id: availableVendor._id }, secretKey, { expiresIn: '1h' });
-    return res.status(201).json({ error: false, message: "Login Success", token });
+    return res.status(201).json({
+        error: false, message: "Login Success",
+        token,
+        userData: {
+            _id: availableVendor._id,
+            email: availableVendor.email,
+            name: availableVendor.name
+        }
+    });
 });
 exports.LoginVendor = LoginVendor;
 //# sourceMappingURL=VendorController.js.map

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetAllCategory = exports.AddCategory = void 0;
+exports.GetAllCategory = exports.GetParentCategory = exports.GetParentChildCategory = exports.AddCategory = void 0;
 const Category_1 = require("../models/Category");
 const AddCategory = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -35,12 +35,53 @@ const AddCategory = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     });
 });
 exports.AddCategory = AddCategory;
-const GetAllCategory = (Req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield Category_1.Category.find();
-    res.status(201).json({
-        message: "All Category",
-        data: result
-    });
+const GetParentChildCategory = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const { catId } = req.params;
+    try {
+        const result = yield Category_1.Category.find({ parent: catId });
+        res.status(201).json({
+            message: "All Category",
+            data: result
+        });
+    }
+    catch (error) {
+        res.status(201).json({
+            error: true,
+            message: error
+        });
+    }
+});
+exports.GetParentChildCategory = GetParentChildCategory;
+const GetParentCategory = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield Category_1.Category.find({ parent: null });
+        res.status(201).json({
+            message: "All Category",
+            data: result
+        });
+    }
+    catch (error) {
+        res.status(201).json({
+            error: true,
+            message: error
+        });
+    }
+});
+exports.GetParentCategory = GetParentCategory;
+const GetAllCategory = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield Category_1.Category.find();
+        res.status(201).json({
+            message: "All Category",
+            data: result
+        });
+    }
+    catch (error) {
+        res.status(201).json({
+            error: true,
+            message: error
+        });
+    }
 });
 exports.GetAllCategory = GetAllCategory;
 //# sourceMappingURL=CategoryController.js.map

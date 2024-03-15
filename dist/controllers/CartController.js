@@ -9,76 +9,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateProduct = exports.SaveProductForLater = exports.GetProductByMostViewed = exports.GetProductById = exports.DeleteProductById = exports.GetProductByFlashSale = exports.GetProductByType = exports.GetAllProducts = exports.GetAllProductColors = exports.GetProductsByCategory = exports.UpdateProductById = exports.Addproduct = exports.UpdateProductColors = exports.AddProductColors = void 0;
+exports.UpdateProduct = exports.SaveProductForLater = exports.GetProductByMostViewed = exports.GetProductById = exports.DeleteProductById = exports.GetProductByFlashSale = exports.GetProductByType = exports.GetAllProducts = exports.GetAllProductColors = exports.GetProductsByCategory = exports.UpdateProductById = exports.AddToCartController = void 0;
 const Products_1 = require("../models/Products");
 const models_1 = require("../models");
+const Users_1 = require("../models/Users");
 // import path from "path";
 // import fs from 'fs'
-const AddProductColors = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const { name, color_code, image } = req.body;
-    const color = new models_1.Product_Colors;
-    color.name = name;
-    color.color_code = color_code;
-    /** ----- Updating Image -------- */
-    const files = req.files;
-    const images = files.map((file) => file.filename);
-    (_a = color.image) === null || _a === void 0 ? void 0 : _a.push(...images);
-    const results = yield color.save();
-    res.status(201).json({
-        message: 'Added Success',
-        data: results
-    });
-});
-exports.AddProductColors = AddProductColors;
-const UpdateProductColors = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
-    const reqData = req.body;
-    const color = yield models_1.Product_Colors.findById(req.params.id);
-    // const color = new Product_Colors;
-    color.name = reqData.name || color.name;
-    color.color_code = reqData.color_code || color.color_code;
-    /** ----- Updating Image -------- */
-    const files = req.files;
-    const images = files.map((file) => file.filename);
-    (_b = color.image) === null || _b === void 0 ? void 0 : _b.push(...images);
-    const results = yield color.save();
-    res.status(201).json({
-        message: 'Product Updated Success',
-        data: results
-    });
-});
-exports.UpdateProductColors = UpdateProductColors;
-const Addproduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
+const AddToCartController = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const vendorExist = yield models_1.Vendor.findById(req.user._id);
-        if (vendorExist === null) {
+        const UserExist = yield Users_1.User.findById(req.user._id);
+        if (UserExist === null) {
             return res.status(401).json({ error: true, message: 'User Not Found!' });
         }
         const reqData = req.body;
-        const data = new Products_1.Product();
-        data.vendor = req.user._id;
-        data.name = reqData.name;
-        data.content = reqData.content;
-        data.price = reqData.price;
-        data.discount_amount = reqData.discount_amount;
-        data.discount_percentage = reqData.discount_percentage;
-        data.product_type = reqData.product_type;
+        const data = new models_1.Cart();
+        data.user_id = req.user._id;
         data.quantity = reqData.quantity;
-        data.sold_quantity = reqData.sold_quantity;
         data.size = reqData.size;
-        data.sku_code = reqData.sku_code;
-        data.category = reqData.category;
         data.color = reqData.color;
-        data.is_trending = reqData.is_trending;
-        data.flash_sale = reqData.flash_sale;
-        data.in_stock = reqData.in_stock;
-        data.view_count = reqData.view_count;
-        data.custom_outfit = reqData.custom_outfit;
-        const files = req.files;
-        const images = files === null || files === void 0 ? void 0 : files.map((file) => file.filename);
-        (_c = data.image) === null || _c === void 0 ? void 0 : _c.push(...images);
+        data.product_id = reqData.product_id;
         const results = yield data.save();
         if (results) {
             res.status(201).json({
@@ -97,9 +46,9 @@ const Addproduct = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         res.status(500).json({ error: 'An error occurred while updating the product' });
     }
 });
-exports.Addproduct = Addproduct;
+exports.AddToCartController = AddToCartController;
 const UpdateProductById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d, _e;
+    var _a, _b;
     const productId = req.params.productId;
     const vendorExist = yield models_1.Vendor.findById(req.user._id);
     if (vendorExist === null) {
@@ -128,10 +77,10 @@ const UpdateProductById = (req, res, next) => __awaiter(void 0, void 0, void 0, 
     data.in_stock = reqData.in_stock;
     data.view_count = reqData.view_count;
     data.custom_outfit = reqData.custom_outfit;
-    if ((_d = req === null || req === void 0 ? void 0 : req.files) === null || _d === void 0 ? void 0 : _d.length) {
+    if ((_a = req === null || req === void 0 ? void 0 : req.files) === null || _a === void 0 ? void 0 : _a.length) {
         const files = req.files;
         const images = files === null || files === void 0 ? void 0 : files.map((file) => file.filename);
-        (_e = data.image) === null || _e === void 0 ? void 0 : _e.push(...images);
+        (_b = data.image) === null || _b === void 0 ? void 0 : _b.push(...images);
     }
     try {
         const results = yield data.save({ validateBeforeSave: false });
@@ -335,4 +284,4 @@ const UpdateProduct = (req, res, next) => {
     });
 };
 exports.UpdateProduct = UpdateProduct;
-//# sourceMappingURL=ProductController.js.map
+//# sourceMappingURL=CartController.js.map

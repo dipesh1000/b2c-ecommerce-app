@@ -19,18 +19,25 @@ const imageStorage = multer_1.default.diskStorage({
 exports.imageService = (0, multer_1.default)({ storage: imageStorage }).array('image', 10);
 const router = express_1.default.Router();
 exports.ProductRouter = router;
+/** ----------Get Product Colors -------------- */
+router.get('/colors', controllers_1.GetAllProductColors);
 /** ----------Get Product -------------- */
 router.get('/', controllers_1.GetAllProducts);
 /** ----------Get Product by Category -------------- */
-router.get('/category/:categoryId', controllers_1.GetProductsByCategory);
+router.get('/category/:categoryIds', controllers_1.GetProductsByCategory);
 /** ----------Get Product by Flash Sale -------------- */
 router.get('/flash_sale', controllers_1.GetProductByFlashSale);
 /** ----------Get Product by type -------------- */
 router.get('/search', controllers_1.GetProductByType);
+/** Get Most View Product */
+router.get('/most-viewed-products', controllers_1.GetProductByMostViewed);
+/** ----------Get Product by ID -------------- */
+router.get('/:productId', controllers_1.GetProductById);
 /** ----------Add Product -------------- */
 router.use(middlewares_1.UseAuthenticate);
 router.post('/product-colors', exports.imageService, controllers_1.AddProductColors);
+router.put('/product-colors/:id', exports.imageService, controllers_1.UpdateProductColors);
 router.post('/', exports.imageService, controllers_1.Addproduct);
-/** ----------Add Product -------------- */
-router.put('/:productId', controllers_1.UpdateProduct);
+router.put('/:productId', exports.imageService, controllers_1.UpdateProductById);
+router.delete('/:productId', controllers_1.DeleteProductById);
 //# sourceMappingURL=ProductRouter.js.map
