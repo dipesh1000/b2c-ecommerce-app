@@ -1,8 +1,6 @@
 import express from 'express';
-import multer from 'multer';
-import { AddProductColors, Addproduct, DeleteProductById, GetAllProductColors, GetAllProducts, GetProductByFlashSale, GetProductById, GetProductByMostViewed, GetProductByType, GetProductsByCategory, UpdateProduct, UpdateProductById, UpdateProductColors } from '../controllers';
 import { UseAuthenticate } from '../middlewares';
-import { AddToCartController } from '../controllers/CartController';
+import { AddToCartController, DeleteCartById, GetAllCart, UpdateToCart } from '../controllers/CartController';
 
 const router = express.Router();
 
@@ -10,22 +8,22 @@ const router = express.Router();
 router.use(UseAuthenticate)
 
 /** ----------Get Cart -------------- */
-router.get('/cart', GetAllProducts);
+router.get('/', GetAllCart);
 
 /** ----------Add to Cart -------------- */
 router.post('/', AddToCartController);
 
 /** ----------Get Cart by ID -------------- */
-router.get('/cart/:cart_id', GetProductById)
+// router.get('/cart/:cart_id', UpdateToCart)
 
 /** ----------Update Cart By Id -------------- */
-router.put('/cart/:cart_id', GetAllProducts);
+router.put('/:cart_id', UpdateToCart);
 
 /** ----------Delete Cart By Id -------------- */
-router.delete('/cart/:cart_id', GetAllProducts);
+router.delete('/:cart_id', DeleteCartById);
 
 /** ----------Delete Cart By Id -------------- */
-router.delete('/cart/all', GetAllProducts);
+// router.delete('/all', GetAllProducts);
 
 
 export {router as CartRouter}

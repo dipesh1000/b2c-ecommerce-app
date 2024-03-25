@@ -13,12 +13,18 @@ export const AddToCartController = async (req: Request, res: Response, next: Nex
         return res.status(401).json({error: true, message: 'User Not Found!'})
     }
     const reqData = <InterfaceAddToCart>req.body;
+    const productExist = await Product.findById(reqData.product_id);
+   
+    if (productExist === null) {
+        return res.status(401).json({error: true, message: 'Product Not Found'})
+    }
     const data = new Cart();
     data.user_id = req.user._id;
     data.quantity = reqData.quantity
     data.size = reqData.size;
     data.color = reqData.color;
     data.product_id = reqData.product_id
+
     const results = await data.save();
     if (results) {
         res.status(201).json({
@@ -36,48 +42,27 @@ export const AddToCartController = async (req: Request, res: Response, next: Nex
     }
 }
 
-export const UpdateProductById = async (req: Request, res: Response, next: NextFunction) => {
-    const productId = req.params.productId;
-    const vendorExist = await Vendor.findById(req.user._id);
-    if (vendorExist === null) {
-        return res.status(401).json({error: true, message: 'User Not Found!'})
-    }
-    const data  = await Product.findById(productId);
-    if (data === null) {
-        return res.status(401).json({error: true, message: 'Request Product Not Found!'})
-    }
-    const reqData = <CreateProductInputs>req.body;
+export const UpdateToCart = async (req: Request, res: Response, next: NextFunction) => {
+    // check user id
+    // check cart exist
+    // update -> qty, color, size
 
-    data.vendor = req.user._id;
-    data.name = reqData.name;
-    data.content = reqData.content;
-    data.price = reqData.price;
-    data.discount_amount = reqData.discount_amount;
-    data.discount_percentage = reqData.discount_percentage;
-    data.product_type = reqData.product_type;
+    let reqData = req.body;
+    let cartId = req.params.cart_id;
+    let UserExist = await User.findById(req.user._id)
+
+    if (!UserExist) {
+        return res.status(404).json({message: 'User Not Found!!!'});
+    }
+    let data = await Cart.findById(cartId);
     data.quantity = reqData.quantity;
-    data.sold_quantity = reqData.sold_quantity;
-    data.size = reqData.size;
-    data.sku_code = reqData.sku_code;
-    data.category = reqData.category;
     data.color = reqData.color;
-
-    data.is_trending= reqData.is_trending;
-    data.flash_sale= reqData.flash_sale;
-    data.in_stock= reqData.in_stock;
-    data.view_count= reqData.view_count;
-    data.custom_outfit= reqData.custom_outfit;
-    if (req?.files?.length) {
-        const files = req.files as [Express.Multer.File];
-        const images = files?.map((file: Express.Multer.File) => file.filename)
-        data.image?.push(...images);
-    }
-
+    data.size = reqData.size;
     try {
         const results = await data.save({ validateBeforeSave: false });
         if (results) {
             res.status(201).json({
-                message: 'Product Updated  Success',
+                message: 'Cart Updated  Success',
                 data: results
             })    
         } else {
@@ -86,7 +71,6 @@ export const UpdateProductById = async (req: Request, res: Response, next: NextF
                 message: "Something Went Wrong"
             })
         }
-        
     } catch (error) {
         console.log(error, "from error");
         res.status(500).json({ error: 'An error occurred while updating the product' });
@@ -95,21 +79,17 @@ export const UpdateProductById = async (req: Request, res: Response, next: NextF
 }
 
 
-export const GetProductsByCategory = async (req: Request, res: Response, next: NextFunction) => {
-    const { categoryIds } = req.params;
-    const catIds = categoryIds.split(',');
-    // const catIds: mongoose.Types.ObjectId[] = categoryIdArray.map(id => new mongoose.Types.ObjectId(id));
+export const GetAllCart = async (req: Request, res: Response, next: NextFunction) => {
     const page: number = Number.parseInt(req.query.page as string) || 1;
     const pageSize: number = Number.parseInt(req.query.pageSize as string) || 10;
-
     try {
         // const count: number = await Product.countDocuments({category: { $in: catIds }});
         // const totalPages: number = Math.ceil(count / pageSize);
-        const data = await Product.find({category: { $in: catIds }}).populate(['color', 'category']).skip((page - 1) * pageSize).limit(pageSize);
+        const data = await Cart.find().skip((page - 1) * pageSize).limit(pageSize);
         const count: number = data.length;
         const totalPages: number = Math.ceil(count / pageSize);
         res.status(201).json({
-            message: 'Get All Product Success',
+            message: 'Get All Cart Success',
             data,
             count,
             totalPages,
@@ -120,107 +100,22 @@ export const GetProductsByCategory = async (req: Request, res: Response, next: N
     }
 }
 
-export const GetAllProductColors = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const data = await Product_Colors.find().exec();
-        res.status(201).json({
-            message: 'Get All Product Colors',
-            data,
-        })
-    } catch (error) {
-        throw error;
-    }
-}
-
-export const GetAllProducts = async (req: Request, res: Response, next: NextFunction) => {
-    const page: number = Number.parseInt(req.query.page as string) || 1;
-    const pageSize: number = Number.parseInt(req.query.pageSize as string) || 10;
-    const categoryIds = req.query.category as string;
-    const catIds = categoryIds && categoryIds.split(',');
-
-    // check Category Exist or not
-    let query = {}
-    if (catIds && catIds.length > 0) {
-        query = { category: { $in: catIds } };
-      }
-
-    console.log(query);
-
-    try {
-        // const count: number = await Product.countDocuments();
-        // const totalPages: number = Math.ceil(count / pageSize);
-        const data = await Product.find(query).skip((page - 1) * pageSize).limit(pageSize).populate('category').exec();
-        const count: number = data.length;
-        const totalPages: number = Math.ceil(count / pageSize);
-        res.status(201).json({
-            message: 'Get All Product Success',
-            data,
-            count,
-            totalPages,
-            currentPage: page
-        })
-    } catch (error) {
-        throw error;
-    }
-}
-
-
-// Get Product By Id
-export const GetProductByType = async (req: Request, res: Response, next: NextFunction) => {
-    const typeQuery = req.query.type;
-    let data;
-    if(typeQuery === 'is_trending') {
-        data = await Product.find().where({ is_trending: true })
-    }
-    res.status(201).json({
-        message: 'Trending Product Fetch Successful',
-        data
-    })
-}
-
-// Get Product By Id
-export const GetProductByFlashSale = async (req: Request, res: Response, next: NextFunction) => {
-    const data = await Product.where({flash_sale: true})
-    res.status(200).json({
-        message: 'Data Fetch Successfully',
-        data
-    })
-}
-
-export const DeleteProductById = async (req: Request, res: Response, next: NextFunction) => {
-    const productId = req.params.productId;
-    const vendorExist = await Vendor.findById(req.user._id);
-    if (vendorExist === null) {
+export const DeleteCartById = async (req: Request, res: Response, next: NextFunction) => {
+    const cartId = req.params.cart_id;
+    const userExist = await User.findById(req.user._id);
+    if (userExist === null) {
         return res.status(401).json({error: true, message: 'User Not Found!'})
     }
-    const data  = await Product.findById(productId);
+    const data  = await Cart.findById(cartId);
     if (data === null) {
-        return res.status(401).json({error: true, message: 'Requested Product Not Found!'})
+        return res.status(401).json({error: true, message: 'Requested Cart Item Not Found!'})
     }
 
-    // try {
-    //     for (const image of data.image) {
-    //       // Construct the path to the image file
-    //       const imagePath = path.join(__dirname, 'uploads', image);
-      
-    //       // Check if the image file exists
-    //       if (fs.existsSync(imagePath)) {
-    //         // Delete the image file
-    //         fs.unlinkSync(imagePath);
-    //       }
-    //     }
-    //   } catch (error) {
-    //     // Handle any errors that occur during image deletion
-    //     return res.status(500).json({ error: true, message: 'Error deleting product images' });
-    //   }
-
-
-
     try {
-        const results = await Product.deleteOne({_id: data._id});
+        const results = await Cart.deleteOne({_id: data._id});
         if (results) {
             res.status(201).json({
-                message: 'Product Deleted  Success',
+                message: 'Cart Deleted  Success',
                 data: results,
                 deletedProduct: data 
             })    
@@ -235,51 +130,4 @@ export const DeleteProductById = async (req: Request, res: Response, next: NextF
         res.status(500).json({ error: 'An error occurred while updating the product' });
     }
    
-}
-
-export const GetProductById = async (req: Request, res: Response, next: NextFunction) => {
-    const productId = req.params.productId;
-    try {
-        await Product.findByIdAndUpdate(productId, {$inc: {view_count: 1}})
-        const data = await Product.findById(productId).populate(['color', 'category']).exec();
-        res.status(201).json({
-            data: data,
-            message: 'Get Product Details'
-        })
-    } catch (error) {
-        res.status(500).json({
-            error: true,
-            message: error
-        })
-    }
-    
-}
-
-export const GetProductByMostViewed = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        console.log("most data");
-        const data = await Product.find({view_count: {$gt: 0}}).sort({view_count: -1}).populate(['color', 'category']).limit(5).exec();
-      
-        res.status(201).json({
-            data: data,
-            message: 'Get Product Details'
-        })
-    } catch (error) {
-        res.status(500).json({
-            error: true,
-            message: error
-        })
-    }
-    
-}
-
-export const SaveProductForLater = (req: Request, res: Response, next: NextFunction) => {
-    const data = req.body;
-    return res.send(data)
-}
-
-export const UpdateProduct = (req: Request, res: Response, next: NextFunction) => {
-    res.status(201).json({
-        message: 'Product Update Success'
-    })    
 }

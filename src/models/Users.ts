@@ -9,6 +9,7 @@ interface IUser {
     password: string;
     wishList: string[];
     phone?: string;
+    role?:string;
 }
 
 // 2. Create a Schema corresponding to the document interface.

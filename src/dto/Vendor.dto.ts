@@ -3,6 +3,7 @@ export interface CreateVendorInput{
     email: string;
     password: string;
     products?: string[];
+    
 }
 
 export interface LoginVendorInput{

@@ -20,6 +20,8 @@ const user = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 app.use('/api/cart', CartRouter);
 app.use('/api/category', CategoryRouter);
 app.use('/api/product', ProductRouter);

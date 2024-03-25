@@ -8,6 +8,7 @@ interface IUser {
     avatar?: string;
     products?: string[];
     password: string;
+    role: string;
     phone?: string;
 }
 
