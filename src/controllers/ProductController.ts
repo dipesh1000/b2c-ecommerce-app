@@ -73,7 +73,7 @@ export const Addproduct = async (req: Request, res: Response, next: NextFunction
     data.custom_outfit= reqData.custom_outfit;
 
     const files = req.files as [Express.Multer.File];
-    const images = files?.map((file: Express.Multer.File) => file.filename)
+    const images = files?.map((file: Express.Multer.File) => file.filename.replace(/\s/g, "_"))
     data.image?.push(...images);
 
     const results = await data.save();
