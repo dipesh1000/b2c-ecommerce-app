@@ -12,8 +12,6 @@ let month = currDate.getMonth();
 
 const path = `./src/images/${year}/${month}/`;
 
-console.log(path, "frm the path");
-
 const imageStorage = multer.diskStorage({
     destination: function(req, file, cb) {
         fs.access(path, (error) => {
