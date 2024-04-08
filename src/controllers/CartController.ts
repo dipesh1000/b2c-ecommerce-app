@@ -18,14 +18,28 @@ export const AddToCartController = async (req: Request, res: Response, next: Nex
     if (productExist === null) {
         return res.status(401).json({error: true, message: 'Product Not Found'})
     }
-    const data = new Cart();
-    data.user_id = req.user._id;
-    data.quantity = reqData.quantity
-    data.size = reqData.size;
-    data.color = reqData.color;
-    data.product_id = reqData.product_id
+    // const data = new Cart();
+    // data.user_id = req.user._id;
+    // data.quantity = reqData.quantity
+    // data.size = reqData.size;
+    // data.color = reqData.color;
+    // data.product_id = reqData.product_id
+// Options for findOneAndUpdate()
+const options = { 
+    upsert: true, // Create a new document if no match is found
+    new: true, // Return the updated document
+    setDefaultsOnInsert: true // Set default values if upserting
+};
+    // Find and update (or create) the document
+    const results =  await Cart.findOneAndUpdate({product_id: reqData.product_id}, {
+            user_id: req.user._id,
+            quantity : reqData.quantity,
+            size : reqData.size,
+            color : reqData.color,
+            product_id : reqData.product_id
+    }, options);
 
-    const results = await data.save();
+    // const results = await data.save();
     if (results) {
         res.status(201).json({
             message: 'Added Success',
@@ -80,12 +94,16 @@ export const UpdateToCart = async (req: Request, res: Response, next: NextFuncti
 
 
 export const GetAllCart = async (req: Request, res: Response, next: NextFunction) => {
+    const userExist = await User.findById(req.user._id);
+    if (userExist === null) {
+        return res.status(401).json({error: true, message: 'User Not Found!'})
+    }
     const page: number = Number.parseInt(req.query.page as string) || 1;
     const pageSize: number = Number.parseInt(req.query.pageSize as string) || 10;
     try {
         // const count: number = await Product.countDocuments({category: { $in: catIds }});
         // const totalPages: number = Math.ceil(count / pageSize);
-        const data = await Cart.find().skip((page - 1) * pageSize).limit(pageSize);
+        const data = await Cart.find({user_id: req.user._id}).populate(['color', 'product_id']).skip((page - 1) * pageSize).limit(pageSize);
         const count: number = data.length;
         const totalPages: number = Math.ceil(count / pageSize);
         res.status(201).json({
@@ -112,12 +130,42 @@ export const DeleteCartById = async (req: Request, res: Response, next: NextFunc
     }
 
     try {
-        const results = await Cart.deleteOne({_id: data._id});
+        const results = await Cart.findByIdAndDelete(cartId);
         if (results) {
             res.status(201).json({
                 message: 'Cart Deleted  Success',
                 data: results,
                 deletedProduct: data 
+            })    
+        } else {
+            res.status(401).json({
+                error: true,
+                message: "Something Went Wrong"
+            })
+        }
+        
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while updating the product' });
+    }
+   
+}
+
+
+export const DeleteAllCartItem = async (req: Request, res: Response, next: NextFunction) => {
+  
+    
+    const userExist = await User.findById(req.user._id);
+    if (userExist === null) {
+        return res.status(401).json({error: true, message: 'User Not Found!'})
+    }
+
+    try {
+        const results = await Cart.deleteMany({user_id: userExist._id});
+        if (results) {
+            res.status(201).json({
+                message: 'Cart Deleted  Success',
+                data: results,
+              
             })    
         } else {
             res.status(401).json({

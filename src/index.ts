@@ -28,7 +28,7 @@ app.use('/api/product', ProductRouter);
 app.use('/api/admin', AdminRouter);
 app.use('/api/vendor', VendorRouter);
 app.use('/api/user', UserRouter);
-app.use('/images', express.static('./src/images/'));
+app.use('/images', express.static('./src/images/2024/2'));
 
 const dbURI = process.env.NODE_ENV === 'production' ? `mongodb+srv://${user}:${password}@cluster0.vukvwps.mongodb.net/?retryWrites=true&w=majority`  : process.env.LOCAL_DB_URI;
 

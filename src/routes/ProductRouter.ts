@@ -65,8 +65,8 @@ router.get('/:productId', GetProductById)
 
 /** ----------Add Product -------------- */
 router.use(UseAuthenticate)
-router.post('/product-colors', imageService, AddProductColors)
-router.put('/product-colors/:id', imageService, UpdateProductColors)
+router.post('/colors', imageService, AddProductColors)
+router.put('/colors/:id', imageService, UpdateProductColors)
 router.post('/', imageService, Addproduct);
 router.put('/:productId', imageService, UpdateProductById);
 router.delete('/:productId', DeleteProductById);
